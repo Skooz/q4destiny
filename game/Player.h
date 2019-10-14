@@ -289,6 +289,11 @@ public:
 	bool					alreadyDidTeamAnnouncerSound;
 	bool					noclip;
 	bool					godmode;
+// Q4 DESTINY BEGIN
+	bool					warlockMode;
+	bool					titanMode;
+	bool					hunterMode;
+// Q4 DESTINY END
 	int						godmodeDamage;
 	bool					undying;
 

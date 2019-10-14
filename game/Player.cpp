@@ -2090,6 +2090,8 @@ void idPlayer::Save( idSaveGame *savefile ) const {
 	savefile->WriteBool( godmode );
 	savefile->WriteInt ( godmodeDamage );	
 	savefile->WriteBool( undying );
+	//Q4 DESTINY START
+	//Q4 DESTINY END
 
 	// don't save spawnAnglesSet, since we'll have to reset them after loading the savegame
 	savefile->WriteAngles( spawnAngles );

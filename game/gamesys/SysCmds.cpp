@@ -605,6 +605,113 @@ void Cmd_God_f( const idCmdArgs &args ) {
 	gameLocal.Printf( "%s", msg );
 }
 
+//  Q4 DESTINY START
+
+// Set classes
+// Titan
+void Cmd_Titan_f(const idCmdArgs &args) {
+	char		*msg;
+	idPlayer	*player;
+
+	player = gameLocal.GetLocalPlayer();
+
+	// Make sure we're the player and make sure cheats are okay
+	if (!player || !gameLocal.CheatsOk()) {
+		return;
+	}
+
+	if (player->hunterMode || player->warlockMode) {
+		player->hunterMode	= false;
+		player->warlockMode = false;
+		player->titanMode	= true;
+		msg = "Titan ON\n";
+	}
+
+	gameLocal.Printf("%s", msg);
+}
+
+// Warlock
+void Cmd_Warlock_f(const idCmdArgs &args) {
+	char		*msg;
+	idPlayer	*player;
+
+	player = gameLocal.GetLocalPlayer();
+
+	if (!player || !gameLocal.CheatsOk()) {
+		return;
+	}
+
+	if (player->titanMode || player->hunterMode) {
+		player->titanMode	= false;
+		player->hunterMode	= false;
+		player->warlockMode = true;
+		msg = "Warlock ON\n";
+	}
+
+	gameLocal.Printf("%s", msg);
+}
+
+// Hunter
+void Cmd_Hunter_f(const idCmdArgs &args) {
+	char		*msg;
+	idPlayer	*player;
+
+	player = gameLocal.GetLocalPlayer();
+
+	if (!player || !gameLocal.CheatsOk()) {
+		return;
+	}
+
+	if (player->titanMode || player->warlockMode) {
+		player->titanMode	= false;
+		player->warlockMode = false;
+		player->hunterMode	= true;
+		msg = "Hunter ON\n";
+	}
+
+	gameLocal.Printf("%s", msg);
+}
+
+
+// Abilities
+// Perhaps fake abilities by creating a unique weapon for each and swapping to them?
+// Random weapons can be mega random lololxD
+// One droppable to recharge each ability, one to recharge melee & grenade, one to recharge everything
+void Cmd_DMelee_f(const idCmdArgs &args) {
+	char		*msg;
+	
+	// if hunter
+	// if titan
+	// if warlock
+
+	msg = "Melee\n";
+	gameLocal.Printf("%s", msg);
+}
+
+void Cmd_DGrenade_f(const idCmdArgs &args) {
+	char		*msg;
+
+	// if hunter
+	// if titan
+	// if warlock
+
+	msg = "Grenade\n";
+	gameLocal.Printf("%s", msg);
+}
+
+void Cmd_DSuper_f(const idCmdArgs &args) {
+	char		*msg;
+
+	// if hunter
+	// if titan
+	// if warlock
+
+	msg = "Super\n";
+	gameLocal.Printf("%s", msg);
+}
+
+// Q4 DESTINY END
+
 /*
 ==================
 Cmd_Undying_f
@@ -3053,6 +3160,16 @@ void idGameLocal::InitConsoleCommands( void ) {
 //	cmdSystem->AddCommand( "writeGameState",		WriteGameState_f,			CMD_FL_GAME,				"write game state" );
 //	cmdSystem->AddCommand( "testSaveGame",			TestSaveGame_f,				CMD_FL_GAME|CMD_FL_CHEAT,	"test a save game for a level" );
 // RAVEN END
+	// Q4 DESTINY BEGIN
+	// Classes
+	cmdSystem->AddCommand("titan",		Cmd_Titan_f,	CMD_FL_GAME | CMD_FL_CHEAT, "enables titan mode");
+	cmdSystem->AddCommand("warlock",	Cmd_Warlock_f,	CMD_FL_GAME | CMD_FL_CHEAT, "enables warlock mode");
+	cmdSystem->AddCommand("hunter",		Cmd_Hunter_f,	CMD_FL_GAME | CMD_FL_CHEAT, "enables hunter mode");
+	// Abilities (Dependant on class)
+	cmdSystem->AddCommand("DMelee",		Cmd_DMelee_f,	CMD_FL_GAME | CMD_FL_CHEAT, "uses melee ability");
+	cmdSystem->AddCommand("DGrenade",	Cmd_DGrenade_f, CMD_FL_GAME | CMD_FL_CHEAT, "uses grenade ability");
+	cmdSystem->AddCommand("DSuper",		Cmd_DSuper_f,	CMD_FL_GAME | CMD_FL_CHEAT, "uses super ability");
+	// Q4 DESTINY END
 	cmdSystem->AddCommand( "game_memory",			idClass::DisplayInfo_f,		CMD_FL_GAME,				"displays game class info" );
 	cmdSystem->AddCommand( "listClasses",			idClass::ListClasses_f,		CMD_FL_GAME,				"lists game classes" );
 	cmdSystem->AddCommand( "listThreads",			idThread::ListThreads_f,	CMD_FL_GAME|CMD_FL_CHEAT,	"lists script threads" );
