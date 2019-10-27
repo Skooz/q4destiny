@@ -293,6 +293,9 @@ public:
 	bool					warlockMode;
 	bool					titanMode;
 	bool					hunterMode;
+	int						meleeCharge		= 0;
+	int						grenadeCharge	= 0;
+	int						superCharge		= 0;
 // Q4 DESTINY END
 	int						godmodeDamage;
 	bool					undying;
@@ -609,6 +612,11 @@ public:
  	void					WeaponRisingCallback		( void );
 	void					RemoveWeapon				( const char *weap );
 	void					Flashlight					( bool on );
+	// Q4 Destiny Start
+	void					DoMelee						( void );
+	void					DoGrenade					( void );
+	void					DoSuper						( void );
+	// Q4 Destiny End
 	void					ToggleFlashlight			( void );
  	bool					CanShowWeaponViewmodel		( void ) const;
 

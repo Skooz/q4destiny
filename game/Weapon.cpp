@@ -909,7 +909,7 @@ void rvWeapon::InitDefs( void ) {
 
 	// Projectile
 	if ( spawnArgs.GetString( "def_projectile", "", &name ) && *name ) {
-		def = gameLocal.FindEntityDef( name, false );
+		def = gameLocal.FindEntityDef( name, false ); // projectile_dmg
 		if ( !def ) {
 			gameLocal.Warning( "Unknown projectile '%s' for weapon '%s'", name, weaponDef->GetName() );
 		} else {

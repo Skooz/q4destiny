@@ -3684,7 +3684,6 @@ void idAI::OnDeath( void ){
 
 	ExecScriptFunction( funcs.death );
 
-/* DONT DROP ANYTHING FOR NOW
 	float rVal = gameLocal.random.RandomInt( 100 );
 
 	if( spawnArgs.GetFloat( "no_drops" ) >= 1.0 ){
@@ -3697,7 +3696,6 @@ void idAI::OnDeath( void ){
 			spawnArgs.Set( "def_dropsItem1", "item_health_small" );
 		}
 	}
-*/
 }
 
 /*

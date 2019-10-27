@@ -4080,17 +4080,62 @@ bool idPlayer::Give( const char *statname, const char *value, bool dropped ) {
 		boundaryArmor *= 2;
 	}
 
-	if ( !idStr::Icmp( statname, "health" ) ) {
-		if ( health >= boundaryHealth ) {
+	if (!idStr::Icmp(statname, "health")) {
+		if (health >= boundaryHealth) {
 			return false;
 		}
- 		amount = atoi( value );
- 		if ( amount ) {
- 			health += amount;
- 			if ( health > boundaryHealth ) {
- 				health = boundaryHealth;
- 			}
+		amount = atoi(value);
+		if (amount) {
+			health += amount;
+			if (health > boundaryHealth) {
+				health = boundaryHealth;
+			}
 		}
+// Q4 Destiny Start
+	} else if (!idStr::Icmp(statname, "meleeboost")) { // Melee
+		if (meleeCharge < gameLocal.time) {
+			return false;
+		}
+		amount = atoi(value);	// atoi gets value of stat?
+		if (amount) {			// Don't really have to do it this way, but fuck it I'm lazy.
+			meleeCharge = amount;
+		}
+	} else if (!idStr::Icmp(statname, "grenadeboost")) { // Grenade
+		if (grenadeCharge < gameLocal.time) {
+			return false;
+		}
+		amount = atoi(value);
+		if (amount) {
+			grenadeCharge = amount;
+		}
+	} else if (!idStr::Icmp(statname, "superboost")) { // Super
+		if (superCharge < gameLocal.time) {
+			return false;
+		}
+		amount = atoi(value);
+		if (amount) {
+			superCharge = amount;
+		}
+	} else if (!idStr::Icmp(statname, "meleegrenadeboost")) { // Melee 'n Grenade
+		if (meleeCharge < gameLocal.time && grenadeCharge < gameLocal.time) {
+			return false;
+		}
+		amount = atoi(value);
+		if (amount) {
+			meleeCharge		= amount;
+			grenadeCharge	= amount;
+		}
+	} else if (!idStr::Icmp(statname, "meleegrenadesuperboost")) { // E V E R Y T H I N G
+		if (meleeCharge < gameLocal.time && grenadeCharge < gameLocal.time && superCharge < gameLocal.time) {
+			return false;
+		}
+		amount = atoi(value);
+		if (amount) {
+			meleeCharge		= amount;
+			grenadeCharge	= amount;
+			superCharge		= amount;
+		}
+// Q4 Destiny End
 	} else if ( !idStr::Icmp( statname, "bonushealth" ) ) {
 		// allow health over max health
 		if ( health >= boundaryHealth * 2 ) {
@@ -4228,6 +4273,11 @@ bool idPlayer::GiveItem( idItem *item ) {
 		gave = true;
 	}
 
+	arg = item->spawnArgs.MatchPrefix("inv_meleecharge", NULL);
+	if (arg && hud) {
+		//hud->HandleNamedEvent("meleePulse");
+		meleeCharge = 0;
+	}
 	arg = item->spawnArgs.MatchPrefix( "inv_ammo_", NULL );
 	if ( arg && hud ) {
 		hud->HandleNamedEvent( "ammoPulse" );
@@ -12891,6 +12941,72 @@ void idPlayer::Event_LevelTrigger( void ) {
 	}
 }
 
+// Q4 Destiny Start
+
+/*
+================
+idPlayer::DoMelee
+================
+*/
+void idPlayer::DoMelee(void) {
+	idEntity*				ent;
+	const idDeclEntityDef*	def;
+	idDict					attackDict;
+	idVec3					muzzleOrigin;
+	idMat3					muzzleAxis;
+
+	def = gameLocal.FindEntityDef("projectile_dmg", false);
+	attackDict = def->dict;
+	muzzleOrigin = weapon->playerViewOrigin;
+	muzzleAxis = weapon->playerViewAxis;
+	//LaunchProjectiles( dict, muzzleOrigin, muzzleAxis, num_attacks, spread, fuseOffset, power );
+	weapon->LaunchProjectiles(attackDict, muzzleOrigin, muzzleAxis, 1, 0, 1, 3);
+}
+
+/*
+================
+idPlayer::DoGrenade
+================
+*/
+void idPlayer::DoGrenade(void) {
+
+	idEntity*				ent;
+	const idDeclEntityDef*	def;
+	idDict					attackDict;
+	idVec3					muzzleOrigin;
+	idMat3					muzzleAxis;
+
+	def = gameLocal.FindEntityDef("projectile_grenade", false);
+	attackDict = def->dict;
+	muzzleOrigin = weapon->playerViewOrigin;
+	muzzleAxis = weapon->playerViewAxis;
+	// LaunchProjectiles( dict, muzzleOrigin, muzzleAxis, num_attacks, spread, fuseOffset, power );
+	weapon->LaunchProjectiles(attackDict, muzzleOrigin, muzzleAxis, 1, 0, 1, 3);
+
+}
+
+/*
+================
+idPlayer::DoSuper
+================
+*/
+void idPlayer::DoSuper(void) {
+	idEntity*				ent;
+	const idDeclEntityDef*	def;
+	idDict					attackDict;
+	idVec3					muzzleOrigin;
+	idMat3					muzzleAxis;
+
+	def = gameLocal.FindEntityDef("projectile_dmg", false);
+	attackDict = def->dict;
+	muzzleOrigin = weapon->playerViewOrigin;
+	muzzleAxis = weapon->playerViewAxis;
+	//LaunchProjectiles(dict, muzzleOrigin, muzzleAxis, num_attacks, spread, fuseOffset, power);
+	weapon->LaunchProjectiles(attackDict, muzzleOrigin, muzzleAxis, 1, 0, 1, 6);
+}
+
+// Q4 Destiny End
+
 /*
 ================
 idPlayer::ToggleFlashlight
@@ -12905,7 +13021,10 @@ void idPlayer::ToggleFlashlight ( void ) {
 	}
 // RAVEN END
 
+	// Flashlight weapon is now the current weapon
 	int flashlightWeapon = currentWeapon;
+	
+	// If it is not a flashlight weapon, then...
 	if ( !spawnArgs.GetBool( va( "weapon%d_flashlight", flashlightWeapon ) ) ) {
 		// TODO: find the first flashlight weapon that has ammo starting at the bottom
 		for( flashlightWeapon = MAX_WEAPONS - 1; flashlightWeapon >= 0; flashlightWeapon-- ) {

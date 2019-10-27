@@ -605,9 +605,11 @@ void Cmd_God_f( const idCmdArgs &args ) {
 	gameLocal.Printf( "%s", msg );
 }
 
-//  Q4 DESTINY START
+//===================
+// Q4 DESTINY START
+//===================
 
-// Set classes
+// Classes
 // Titan
 void Cmd_Titan_f(const idCmdArgs &args) {
 	char		*msg;
@@ -616,7 +618,7 @@ void Cmd_Titan_f(const idCmdArgs &args) {
 	player = gameLocal.GetLocalPlayer();
 
 	// Make sure we're the player and make sure cheats are okay
-	if (!player || !gameLocal.CheatsOk()) {
+	if (!player) {
 		return;
 	}
 
@@ -629,7 +631,6 @@ void Cmd_Titan_f(const idCmdArgs &args) {
 
 	gameLocal.Printf("%s", msg);
 }
-
 // Warlock
 void Cmd_Warlock_f(const idCmdArgs &args) {
 	char		*msg;
@@ -637,7 +638,7 @@ void Cmd_Warlock_f(const idCmdArgs &args) {
 
 	player = gameLocal.GetLocalPlayer();
 
-	if (!player || !gameLocal.CheatsOk()) {
+	if (!player) {
 		return;
 	}
 
@@ -650,7 +651,6 @@ void Cmd_Warlock_f(const idCmdArgs &args) {
 
 	gameLocal.Printf("%s", msg);
 }
-
 // Hunter
 void Cmd_Hunter_f(const idCmdArgs &args) {
 	char		*msg;
@@ -658,7 +658,7 @@ void Cmd_Hunter_f(const idCmdArgs &args) {
 
 	player = gameLocal.GetLocalPlayer();
 
-	if (!player || !gameLocal.CheatsOk()) {
+	if (!player) {
 		return;
 	}
 
@@ -672,45 +672,68 @@ void Cmd_Hunter_f(const idCmdArgs &args) {
 	gameLocal.Printf("%s", msg);
 }
 
+// Binary space partition
 
 // Abilities
 // Perhaps fake abilities by creating a unique weapon for each and swapping to them?
-// Random weapons can be mega random lololxD
+// Generate randoms in source code by making two (min/max) values in the definition files and pulling both
 // One droppable to recharge each ability, one to recharge melee & grenade, one to recharge everything
+
+// Melee
 void Cmd_DMelee_f(const idCmdArgs &args) {
-	char		*msg;
-	
-	// if hunter
-	// if titan
-	// if warlock
+	idPlayer	*player;
+	player = gameLocal.GetLocalPlayer();
 
-	msg = "Melee\n";
-	gameLocal.Printf("%s", msg);
+	if (!player) {
+		return;
+	}
+
+	if (player->meleeCharge < gameLocal.time){ // think function for cooldown in GUI w/ bool?
+		player->DoMelee();
+		player->meleeCharge = gameLocal.time + 30000;
+	}
+	else {
+		return;
+	}
 }
-
+// Grenade
 void Cmd_DGrenade_f(const idCmdArgs &args) {
-	char		*msg;
+	idPlayer	*player;
+	player = gameLocal.GetLocalPlayer();
 
-	// if hunter
-	// if titan
-	// if warlock
+	if (!player) {
+		return;
+	}
 
-	msg = "Grenade\n";
-	gameLocal.Printf("%s", msg);
+	if (player->grenadeCharge < gameLocal.time){
+		player->DoGrenade();
+		player->grenadeCharge = gameLocal.time + 30000;
+	}
+	else {
+		return;
+	}
 }
-
+// Super
 void Cmd_DSuper_f(const idCmdArgs &args) {
-	char		*msg;
+	idPlayer	*player;
+	player = gameLocal.GetLocalPlayer();
 
-	// if hunter
-	// if titan
-	// if warlock
+	if (!player) {
+		return;
+	}
 
-	msg = "Super\n";
-	gameLocal.Printf("%s", msg);
+	if (player->superCharge < gameLocal.time){
+		player->DoSuper();
+		player->superCharge = gameLocal.time + 120000;
+	}
+	else {
+		return;
+	}
 }
 
+// ===============
 // Q4 DESTINY END
+// ===============
 
 /*
 ==================
