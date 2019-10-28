@@ -290,9 +290,9 @@ public:
 	bool					noclip;
 	bool					godmode;
 // Q4 DESTINY BEGIN
-	bool					warlockMode;
-	bool					titanMode;
-	bool					hunterMode;
+	bool					warlockMode = true;
+	bool					titanMode = false;
+	bool					hunterMode = false;
 	int						meleeCharge		= 0;
 	int						grenadeCharge	= 0;
 	int						superCharge		= 0;

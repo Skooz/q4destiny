@@ -12954,13 +12954,56 @@ void idPlayer::DoMelee(void) {
 	idDict					attackDict;
 	idVec3					muzzleOrigin;
 	idMat3					muzzleAxis;
+	bool					isHitscan = false;
+	int						num_attacks;
+	int						spread;
+	int						power;
+	float					fuseOffset;
 
-	def = gameLocal.FindEntityDef("projectile_dmg", false);
-	attackDict = def->dict;
 	muzzleOrigin = weapon->playerViewOrigin;
 	muzzleAxis = weapon->playerViewAxis;
-	//LaunchProjectiles( dict, muzzleOrigin, muzzleAxis, num_attacks, spread, fuseOffset, power );
-	weapon->LaunchProjectiles(attackDict, muzzleOrigin, muzzleAxis, 1, 0, 1, 3);
+
+	// What projectile \ hitscan are we going to use based on class?
+	if (warlockMode){
+		// Warlocks shoot a beam boi.
+		def = gameLocal.FindEntityDef("hitscan_railgun", false);
+		isHitscan	= true;
+		num_attacks = 1;
+		spread		= 0;
+		power		= 10;
+		fuseOffset	= 0;
+	}
+	else if (titanMode){
+		// Titans throw a fire hammer boi... Trust me, it's in the game. 
+		def = gameLocal.FindEntityDef("projectile_napalm2", false);
+		isHitscan	= false;
+		num_attacks = 1;
+		spread		= 0;
+		power		= 3;
+		fuseOffset	= 0;
+	}
+	else if (hunterMode){
+		// Alright it's not a knife but they gotta throw something, because throwing stuff is fun.
+		def = gameLocal.FindEntityDef("projectile_nail2", false);
+		isHitscan	= false;
+		num_attacks	= 1;
+		spread		= 0;
+		power		= 10;
+		fuseOffset	= 0;
+	}
+	else{
+		return;
+	}
+	
+	// Put the entity def into a dictionary
+	attackDict = def->dict;
+
+	// Do we use hitscan or projectile?
+	if (isHitscan){
+		weapon->Hitscan(attackDict, muzzleOrigin, muzzleAxis, num_attacks, spread, power);
+	} else{
+		weapon->LaunchProjectiles(attackDict, muzzleOrigin, muzzleAxis, num_attacks, spread, fuseOffset, power);
+	}
 }
 
 /*
@@ -12969,19 +13012,62 @@ idPlayer::DoGrenade
 ================
 */
 void idPlayer::DoGrenade(void) {
-
 	idEntity*				ent;
 	const idDeclEntityDef*	def;
 	idDict					attackDict;
 	idVec3					muzzleOrigin;
 	idMat3					muzzleAxis;
+	bool					isHitscan = false;
+	int						num_attacks;
+	int						spread;
+	int						power;
+	float						fuseOffset;
 
-	def = gameLocal.FindEntityDef("projectile_grenade", false);
-	attackDict = def->dict;
 	muzzleOrigin = weapon->playerViewOrigin;
 	muzzleAxis = weapon->playerViewAxis;
-	// LaunchProjectiles( dict, muzzleOrigin, muzzleAxis, num_attacks, spread, fuseOffset, power );
-	weapon->LaunchProjectiles(attackDict, muzzleOrigin, muzzleAxis, 1, 0, 1, 3);
+
+	// What projectile \ hitscan are we going to use based on class?
+	if (warlockMode){
+		// Warlocks cast insta explosion!
+		def = gameLocal.FindEntityDef("projectile_grenade", false);
+		isHitscan = true;
+		num_attacks = 1;
+		spread = 0;
+		power = 2;
+		fuseOffset = 2.5;
+	}
+	else if (titanMode){
+		// Titans throw a fucking grenade. Beacuse I'm lazy. Again.
+		def = gameLocal.FindEntityDef("projectile_grenade", false);
+		isHitscan = false;
+		num_attacks = 1;
+		spread = 0;
+		power = 5;
+		fuseOffset = 0;
+	}
+	else if (hunterMode){
+		// Hunters toss a bunch of explosives that detonate in close range
+		def = gameLocal.FindEntityDef("projectile_grenade2", false);
+		isHitscan = false;
+		num_attacks = 5;
+		spread = 12;
+		power = 1;
+		fuseOffset = 2.2;
+	}
+	else{
+		return;
+	}
+
+	// Put the entity def into a dictionary
+	attackDict = def->dict;
+
+	// Do we use hitscan or projectile?
+	if (isHitscan){
+		weapon->Hitscan(attackDict, muzzleOrigin, muzzleAxis, num_attacks, spread, power);
+	}
+	else{
+		weapon->LaunchProjectiles(attackDict, muzzleOrigin, muzzleAxis, num_attacks, spread, fuseOffset, power);
+	}
 
 }
 
@@ -12991,18 +13077,67 @@ idPlayer::DoSuper
 ================
 */
 void idPlayer::DoSuper(void) {
+
+	// Warlock lightning gun?
+	// Titan hammer spam?
+	// Hunter knife blast.
+
 	idEntity*				ent;
 	const idDeclEntityDef*	def;
 	idDict					attackDict;
 	idVec3					muzzleOrigin;
 	idMat3					muzzleAxis;
+	bool					isHitscan = false;
+	int						num_attacks;
+	int						spread;
+	int						power;
+	float						fuseOffset;
 
-	def = gameLocal.FindEntityDef("projectile_dmg", false);
-	attackDict = def->dict;
 	muzzleOrigin = weapon->playerViewOrigin;
 	muzzleAxis = weapon->playerViewAxis;
-	//LaunchProjectiles(dict, muzzleOrigin, muzzleAxis, num_attacks, spread, fuseOffset, power);
-	weapon->LaunchProjectiles(attackDict, muzzleOrigin, muzzleAxis, 1, 0, 1, 6);
+
+	// What projectile \ hitscan are we going to use based on class?
+	if (warlockMode){
+		// Warlocks throw A big ol' gravity bomb!
+		def = gameLocal.FindEntityDef("projectile_dmg2", false);
+		isHitscan = false;
+		num_attacks = 1;
+		spread = 0;
+		power = 20;
+		fuseOffset = 0;
+	}
+	else if (titanMode){
+		// Titans throw more "hammers"?
+		def = gameLocal.FindEntityDef("projectile_grenade2", false);
+		isHitscan = false;
+		num_attacks = 10;
+		spread = 1;
+		power = 2;
+		fuseOffset = 2.5;
+	}
+	else if (hunterMode){
+		// Hunters throw a buncha fuckin' seeking knives.
+		def = gameLocal.FindEntityDef("projectile_nail_seek2", false);
+		isHitscan = false;
+		num_attacks = 24;
+		spread = 12;
+		power = 48;
+		fuseOffset = 0;
+	}
+	else{
+		return;
+	}
+
+	// Put the entity def into a dictionary
+	attackDict = def->dict;
+
+	// Do we use hitscan or projectile?
+	if (isHitscan){
+		weapon->Hitscan(attackDict, muzzleOrigin, muzzleAxis, num_attacks, spread, power);
+	}
+	else{
+		weapon->LaunchProjectiles(attackDict, muzzleOrigin, muzzleAxis, num_attacks, spread, fuseOffset, power);
+	}
 }
 
 // Q4 Destiny End

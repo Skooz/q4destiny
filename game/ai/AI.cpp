@@ -3685,17 +3685,30 @@ void idAI::OnDeath( void ){
 	ExecScriptFunction( funcs.death );
 
 	// Randomized drops
+
+	// item_melee_charge	20
+	// item_grenade_charge	20
+	// item_super_charge	10
+	// item_meleegrenade_charge 10
+	// item_meleegrenadesuper_charge 5
+
 	float rVal = gameLocal.random.RandomInt( 100 );
 
+	/*
 	if( spawnArgs.GetFloat( "no_drops" ) >= 1.0 ){
-		spawnArgs.Set( "def_dropsItem1", "item_health_small" );
-	}else{
-		if( rVal < 25 ){
-			spawnArgs.Set( "def_dropsItem1", "item_health_small" );
-		}else if( rVal < 50 ){
-			spawnArgs.Set( "def_dropsItem1", "item_health_small" );
-		}
+		spawnArgs.Set( "def_dropsItem1", " );
 	}
+	*/
+	if (rVal >= 1 && rVal <= 20)
+		spawnArgs.Set( "def_dropsItem1", "item_melee_charge" );
+	if (rVal >= 21 && rVal <= 41)
+		spawnArgs.Set("def_dropsItem1", "item_grenade_charge");
+	if (rVal >=42 && rVal <= 52)
+		spawnArgs.Set("def_dropsItem1", "item_super_charge");
+	if (rVal >= 53 && rVal <= 63)
+		spawnArgs.Set("def_dropsItem1", "item_meleegrenade_charge");
+	if (rVal >= 64 && rVal <= 69)
+		spawnArgs.Set("def_dropsItem1", "item_meleegrenadesuper_charge");
 }
 
 /*

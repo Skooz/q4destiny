@@ -610,6 +610,7 @@ void Cmd_God_f( const idCmdArgs &args ) {
 //===================
 
 // Classes
+
 // Titan
 void Cmd_Titan_f(const idCmdArgs &args) {
 	char		*msg;
@@ -618,7 +619,7 @@ void Cmd_Titan_f(const idCmdArgs &args) {
 	player = gameLocal.GetLocalPlayer();
 
 	// Make sure we're the player and make sure cheats are okay
-	if (!player) {
+	if (!player || player->titanMode) {
 		return;
 	}
 
@@ -631,6 +632,7 @@ void Cmd_Titan_f(const idCmdArgs &args) {
 
 	gameLocal.Printf("%s", msg);
 }
+
 // Warlock
 void Cmd_Warlock_f(const idCmdArgs &args) {
 	char		*msg;
@@ -638,7 +640,7 @@ void Cmd_Warlock_f(const idCmdArgs &args) {
 
 	player = gameLocal.GetLocalPlayer();
 
-	if (!player) {
+	if (!player || player->warlockMode) {
 		return;
 	}
 
@@ -651,6 +653,7 @@ void Cmd_Warlock_f(const idCmdArgs &args) {
 
 	gameLocal.Printf("%s", msg);
 }
+
 // Hunter
 void Cmd_Hunter_f(const idCmdArgs &args) {
 	char		*msg;
@@ -658,7 +661,7 @@ void Cmd_Hunter_f(const idCmdArgs &args) {
 
 	player = gameLocal.GetLocalPlayer();
 
-	if (!player) {
+	if (!player || player->hunterMode) {
 		return;
 	}
 
