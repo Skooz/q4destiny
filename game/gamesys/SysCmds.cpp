@@ -618,7 +618,6 @@ void Cmd_Titan_f(const idCmdArgs &args) {
 
 	player = gameLocal.GetLocalPlayer();
 
-	// Make sure we're the player and make sure cheats are okay
 	if (!player || player->titanMode) {
 		return;
 	}
@@ -627,6 +626,9 @@ void Cmd_Titan_f(const idCmdArgs &args) {
 		player->hunterMode	= false;
 		player->warlockMode = false;
 		player->titanMode	= true;
+		player->titanMod	= -0.25;	// Damage reduction (additive)
+		player->hunterMod	= 1;
+		player->warlockMod	= 1;
 		msg = "Titan ON\n";
 	}
 
@@ -648,6 +650,9 @@ void Cmd_Warlock_f(const idCmdArgs &args) {
 		player->titanMode	= false;
 		player->hunterMode	= false;
 		player->warlockMode = true;
+		player->titanMod	= 0;
+		player->hunterMod	= 1;
+		player->warlockMod	= 2;		// Cooldown reduction (divisor)
 		msg = "Warlock ON\n";
 	}
 
@@ -669,6 +674,9 @@ void Cmd_Hunter_f(const idCmdArgs &args) {
 		player->titanMode	= false;
 		player->warlockMode = false;
 		player->hunterMode	= true;
+		player->titanMod	= 0;
+		player->hunterMod	= 1.25;	// Movement speed (multiplier)
+		player->warlockMod	= 1;
 		msg = "Hunter ON\n";
 	}
 
@@ -691,9 +699,9 @@ void Cmd_DMelee_f(const idCmdArgs &args) {
 		return;
 	}
 
-	if (player->meleeCharge < gameLocal.time){ // think function for cooldown in GUI w/ bool?
+	if (player->meleeCharge < gameLocal.time){
 		player->DoMelee();
-		player->meleeCharge = gameLocal.time + 30000;
+		player->meleeCharge = gameLocal.time + 30000 / player->warlockMod;
 	}
 	else {
 		return;
@@ -710,7 +718,7 @@ void Cmd_DGrenade_f(const idCmdArgs &args) {
 
 	if (player->grenadeCharge < gameLocal.time){
 		player->DoGrenade();
-		player->grenadeCharge = gameLocal.time + 30000;
+		player->grenadeCharge = gameLocal.time + 30000 / player->warlockMod;
 	}
 	else {
 		return;
@@ -727,7 +735,7 @@ void Cmd_DSuper_f(const idCmdArgs &args) {
 
 	if (player->superCharge < gameLocal.time){
 		player->DoSuper();
-		player->superCharge = gameLocal.time + 120000;
+		player->superCharge = gameLocal.time + 120000 / player->warlockMod;
 	}
 	else {
 		return;

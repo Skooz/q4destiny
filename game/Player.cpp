@@ -4273,11 +4273,6 @@ bool idPlayer::GiveItem( idItem *item ) {
 		gave = true;
 	}
 
-	arg = item->spawnArgs.MatchPrefix("inv_meleecharge", NULL);
-	if (arg && hud) {
-		//hud->HandleNamedEvent("meleePulse");
-		meleeCharge = 0;
-	}
 	arg = item->spawnArgs.MatchPrefix( "inv_ammo_", NULL );
 	if ( arg && hud ) {
 		hud->HandleNamedEvent( "ammoPulse" );
@@ -8795,9 +8790,9 @@ void idPlayer::AdjustSpeed( void ) {
 		bobFrac = 0.0f;
  	} else if ( !physicsObj.OnLadder() && ( usercmd.buttons & BUTTON_RUN ) && ( usercmd.forwardmove || usercmd.rightmove ) && ( usercmd.upmove >= 0 ) ) {
 		bobFrac = 1.0f;
-		speed = pm_speed.GetFloat();
+		speed = pm_speed.GetFloat() * hunterMod;
 	} else {
-		speed = pm_walkspeed.GetFloat();
+		speed = pm_walkspeed.GetFloat() * hunterMod;
 		bobFrac = 0.0f;
 	}
 
@@ -10122,7 +10117,7 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 	
 	if ( !gameLocal.isMultiplayer ) {
 		if ( inflictor != gameLocal.world ) {
-			modifiedDamageScale *= ( 1.0f + gameLocal.GetDifficultyModifier() );
+			modifiedDamageScale *= ( 1.0f + gameLocal.GetDifficultyModifier() + titanMod );
 		}
 	}
 	// RAVEN END

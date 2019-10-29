@@ -290,12 +290,15 @@ public:
 	bool					noclip;
 	bool					godmode;
 // Q4 DESTINY BEGIN
-	bool					warlockMode = true;
-	bool					titanMode = false;
-	bool					hunterMode = false;
+	bool					warlockMode		= false;
+	bool					titanMode		= false;
+	bool					hunterMode		= false;
 	int						meleeCharge		= 0;
 	int						grenadeCharge	= 0;
 	int						superCharge		= 0;
+	float					titanMod		= 0; // For damage reduction
+	float					hunterMod		= 1; // For movement speed increase
+	float					warlockMod		= 1; // For ability cooldown
 // Q4 DESTINY END
 	int						godmodeDamage;
 	bool					undying;
