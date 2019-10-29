@@ -12970,7 +12970,7 @@ void idPlayer::DoMelee(void) {
 		isHitscan	= true;
 		num_attacks = 1;
 		spread		= 0;
-		power		= 10;
+		power		= 6;
 		fuseOffset	= 0;
 	}
 	else if (titanMode){
@@ -12979,7 +12979,7 @@ void idPlayer::DoMelee(void) {
 		isHitscan	= false;
 		num_attacks = 1;
 		spread		= 0;
-		power		= 3;
+		power		= 6;
 		fuseOffset	= 0;
 	}
 	else if (hunterMode){
@@ -12988,7 +12988,7 @@ void idPlayer::DoMelee(void) {
 		isHitscan	= false;
 		num_attacks	= 1;
 		spread		= 0;
-		power		= 10;
+		power		= 20;
 		fuseOffset	= 0;
 	}
 	else{
@@ -13033,7 +13033,7 @@ void idPlayer::DoGrenade(void) {
 		isHitscan = true;
 		num_attacks = 1;
 		spread = 0;
-		power = 2;
+		power = 3;
 		fuseOffset = 2.5;
 	}
 	else if (titanMode){
@@ -13113,14 +13113,14 @@ void idPlayer::DoSuper(void) {
 		num_attacks = 10;
 		spread = 1;
 		power = 2;
-		fuseOffset = 2.5;
+		fuseOffset = 3;
 	}
 	else if (hunterMode){
 		// Hunters throw a buncha fuckin' seeking knives.
 		def = gameLocal.FindEntityDef("projectile_nail_seek2", false);
 		isHitscan = false;
 		num_attacks = 24;
-		spread = 12;
+		spread = 10;
 		power = 48;
 		fuseOffset = 0;
 	}

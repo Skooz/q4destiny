@@ -3686,19 +3686,9 @@ void idAI::OnDeath( void ){
 
 	// Randomized drops
 
-	// item_melee_charge	20
-	// item_grenade_charge	20
-	// item_super_charge	10
-	// item_meleegrenade_charge 10
-	// item_meleegrenadesuper_charge 5
-
+	// Use this randomly generated number to determine what drops
 	float rVal = gameLocal.random.RandomInt( 100 );
 
-	/*
-	if( spawnArgs.GetFloat( "no_drops" ) >= 1.0 ){
-		spawnArgs.Set( "def_dropsItem1", " );
-	}
-	*/
 	if (rVal >= 1 && rVal <= 20)
 		spawnArgs.Set( "def_dropsItem1", "item_melee_charge" );
 	if (rVal >= 21 && rVal <= 41)
