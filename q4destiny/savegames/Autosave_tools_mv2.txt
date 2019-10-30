@@ -1,4 +1,0 @@
-"Autosave tools/mv2"
-"^:Map Start	^0tools/mv2"
-""
-nooverwrite
