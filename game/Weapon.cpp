@@ -623,13 +623,19 @@ void rvWeapon::Spawn ( void ) {
 	weaponOffsetTime			= spawnArgs.GetFloat( "weaponOffsetTime", "400" );
 	weaponOffsetScale			= spawnArgs.GetFloat( "weaponOffsetScale", "0.005" );
 
-	fireRate	= SEC2MS ( spawnArgs.GetFloat ( "fireRate" ) );
-	altFireRate	= SEC2MS ( spawnArgs.GetFloat ( "altFireRate" ) );
+	// Q4 Destiny Start
+	// RandomFloat()*(topValue-bottomValue) + bottomValue;
+	// fireRateMin is higher because firerate is a delay.
+	float rVal = gameLocal.random.RandomFloat() * (spawnArgs.GetFloat("fireRateMin") - spawnArgs.GetFloat("fireRateMax")) + spawnArgs.GetFloat("fireRateMax");
+	fireRate	= SEC2MS ( rVal );
+	float rVal2 = gameLocal.random.RandomFloat() * (spawnArgs.GetFloat("altFireRateMin") - spawnArgs.GetFloat("altFireRateMax")) + spawnArgs.GetFloat("altFireRateMax");
+	altFireRate	= SEC2MS ( rVal2 );
 	if( altFireRate == 0 ) {
 		altFireRate = fireRate;
 	}
 	spread		= (gameLocal.IsMultiplayer()&&spawnArgs.FindKey("spread_mp"))?spawnArgs.GetFloat ( "spread_mp" ):spawnArgs.GetFloat ( "spread" );
 	nextAttackTime = 0;
+	// Q4 Destiny End
 
 	// Zoom
 	zoomFov = spawnArgs.GetInt( "zoomFov", "-1" );
@@ -652,8 +658,14 @@ void rvWeapon::Spawn ( void ) {
  	hideStartTime		= gameLocal.time - hideTime;
  	muzzleOffset		= weaponDef->dict.GetFloat ( "muzzleOffset", "14" );
 
+	
 	// Ammo
-	clipSize			= spawnArgs.GetInt( "clipSize" );
+	// Q4 Destiny Start
+	// RandomInt(topVal - bottVal) + bottValue;
+	int rVal3 = gameLocal.random.RandomInt(spawnArgs.GetInt("clipSizeMax") - spawnArgs.GetInt("clipSizeMin")) + spawnArgs.GetInt("clipSizeMin");
+	clipSize	= rVal3;
+	// Q4 Destiny End
+
 	ammoRequired		= spawnArgs.GetInt( "ammoRequired" );
 	lowAmmo				= spawnArgs.GetInt( "lowAmmo" );
 	ammoType			= GetAmmoIndexForName( spawnArgs.GetString( "ammoType" ) );
@@ -909,7 +921,7 @@ void rvWeapon::InitDefs( void ) {
 
 	// Projectile
 	if ( spawnArgs.GetString( "def_projectile", "", &name ) && *name ) {
-		def = gameLocal.FindEntityDef( name, false ); // projectile_dmg
+		def = gameLocal.FindEntityDef( name, false );
 		if ( !def ) {
 			gameLocal.Warning( "Unknown projectile '%s' for weapon '%s'", name, weaponDef->GetName() );
 		} else {

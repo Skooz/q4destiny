@@ -290,15 +290,15 @@ public:
 	bool					noclip;
 	bool					godmode;
 // Q4 DESTINY BEGIN
-	bool					warlockMode		= false;
+	bool					warlockMode		= true;
 	bool					titanMode		= false;
 	bool					hunterMode		= false;
 	int						meleeCharge		= 0;
 	int						grenadeCharge	= 0;
 	int						superCharge		= 0;
-	float					titanMod		= 0; // For damage reduction
+	float					titanMod		= 1; // For damage reduction
 	float					hunterMod		= 1; // For movement speed increase
-	float					warlockMod		= 1; // For ability cooldown
+	float					warlockMod		= 2; // For ability cooldown (Starts at 2 because you start as warlock)
 // Q4 DESTINY END
 	int						godmodeDamage;
 	bool					undying;
@@ -545,7 +545,9 @@ public:
 
 	// Wrist computer
 	void					GiveObjective				( const char *title, const char *text, const char *screenshot );
+	void					GiveDObjective				(const char *title, const char *text);
 	void					CompleteObjective			( const char *title );
+	void					CompleteDObjective			(const char *title);
 	void					FailObjective				( const char *title );
 	void					GiveDatabaseEntry			( const idDict* dbEntry, bool hudPopup = true );
 	bool					IsObjectiveUp				( void ) const { return objectiveUp; }

@@ -609,6 +609,17 @@ void Cmd_God_f( const idCmdArgs &args ) {
 // Q4 DESTINY START
 //===================
 
+/*
+Weapons..
+
+What can be changed?:
+fireRate	-> fireRateMin, fireRateMax
+clipSize	-> clipSizeMin, clipSizeMax
+
+hitscans??? / projectile count??? = Weedsssss
+damage??? = WEEEEEDSSSSS
+*/
+
 // Classes
 
 // Titan
@@ -626,7 +637,10 @@ void Cmd_Titan_f(const idCmdArgs &args) {
 		player->hunterMode	= false;
 		player->warlockMode = false;
 		player->titanMode	= true;
-		player->titanMod	= -0.25;	// Damage reduction (additive)
+		player->GiveDObjective("TITAN", "Titan class selected"); // GiveObjective( const char *title, const char *text, const char *screenshot )
+		player->CompleteDObjective("HUNTER");
+		player->CompleteDObjective("WARLOCK");
+		player->titanMod	= 3;	// Damage reduction (divisor)
 		player->hunterMod	= 1;
 		player->warlockMod	= 1;
 		msg = "Titan ON\n";
@@ -650,9 +664,12 @@ void Cmd_Warlock_f(const idCmdArgs &args) {
 		player->titanMode	= false;
 		player->hunterMode	= false;
 		player->warlockMode = true;
-		player->titanMod	= 0;
+		player->GiveDObjective("WARLOCK", "Warlock class selected");
+		player->CompleteDObjective("HUNTER");
+		player->CompleteDObjective("TITAN");
+		player->titanMod	= 1;
 		player->hunterMod	= 1;
-		player->warlockMod	= 2;		// Cooldown reduction (divisor)
+		player->warlockMod	= 3;		// Cooldown reduction (divisor)
 		msg = "Warlock ON\n";
 	}
 
@@ -674,8 +691,11 @@ void Cmd_Hunter_f(const idCmdArgs &args) {
 		player->titanMode	= false;
 		player->warlockMode = false;
 		player->hunterMode	= true;
-		player->titanMod	= 0;
-		player->hunterMod	= 1.25;	// Movement speed (multiplier)
+		player->GiveDObjective("HUNTER", "Hunter class selected");
+		player->CompleteDObjective("TITAN");
+		player->CompleteDObjective("WARLOCK");
+		player->titanMod	= 1;
+		player->hunterMod	= 2;	// Movement speed (multiplier)
 		player->warlockMod	= 1;
 		msg = "Hunter ON\n";
 	}

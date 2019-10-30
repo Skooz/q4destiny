@@ -4092,6 +4092,7 @@ bool idPlayer::Give( const char *statname, const char *value, bool dropped ) {
 			}
 		}
 // Q4 Destiny Start
+// This portion of the code makes the droppables actually work
 	} else if (!idStr::Icmp(statname, "meleeboost")) { // Melee
 		if (meleeCharge < gameLocal.time) {
 			return false;
@@ -5265,6 +5266,33 @@ void idPlayer::GiveObjective( const char *title, const char *text, const char *s
 
 /*
 ===============
+idPlayer::GiveDObjective
+For q4Destiny
+===============
+*/
+void idPlayer::GiveDObjective(const char *title, const char *text) {
+	idObjectiveInfo info;
+	// RAVEN BEGIN
+	info.title = title;
+	info.text = text;
+	// RAVEN END
+	inventory.objectiveNames.Append(info);
+	if (showNewObjectives) {
+		//ShowObjective("newObjective");
+	}
+	if (objectiveSystem) {
+		if (objectiveSystemOpen) {
+			objectiveSystemOpen = false;
+			ToggleObjectives();
+#ifdef _XENON
+			g_ObjectiveSystemOpen = objectiveSystemOpen;
+#endif
+		}
+	}
+}
+
+/*
+===============
 idPlayer::CompleteObjective
 ===============
 */
@@ -5288,6 +5316,38 @@ void idPlayer::CompleteObjective( const char *title ) {
 	if ( objectiveSystemOpen ) {
 		objectiveSystemOpen = false;
 		ToggleObjectives ( );
+#ifdef _XENON
+		g_ObjectiveSystemOpen = objectiveSystemOpen;
+#endif
+	}
+}
+
+/*
+===============
+idPlayer::CompleteDObjective
+For q4Destiny
+===============
+*/
+void idPlayer::CompleteDObjective(const char *title) {
+	// RAVEN BEGIN
+	//title = common->GetLocalizedString(title);
+	// RAVEN END
+	int c = inventory.objectiveNames.Num();
+	for (int i = 0; i < c; i++) {
+		if (idStr::Icmp(inventory.objectiveNames[i].title, title) == 0) {
+			inventory.objectiveNames.RemoveIndex(i);
+			break;
+		}
+	}
+	//ShowObjective("newObjectiveComplete");
+
+	if (objectiveSystem) {
+		//objectiveSystem->HandleNamedEvent("newObjectiveComplete");
+	}
+
+	if (objectiveSystemOpen) {
+		objectiveSystemOpen = false;
+		ToggleObjectives();
 #ifdef _XENON
 		g_ObjectiveSystemOpen = objectiveSystemOpen;
 #endif
@@ -10117,7 +10177,7 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 	
 	if ( !gameLocal.isMultiplayer ) {
 		if ( inflictor != gameLocal.world ) {
-			modifiedDamageScale *= ( 1.0f + gameLocal.GetDifficultyModifier() + titanMod );
+			modifiedDamageScale *= ( 1.0f + gameLocal.GetDifficultyModifier());
 		}
 	}
 	// RAVEN END
@@ -10307,7 +10367,7 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 		}
 
 		int oldHealth = health;
-		health -= damage;
+		health -= (damage/titanMod);
 
 		GAMELOG_ADD ( va("player%d_damage_taken", entityNumber ), damage );
 		GAMELOG_ADD ( va("player%d_damage_%s", entityNumber, damageDefName), damage );
@@ -12857,7 +12917,6 @@ void idPlayer::ShowObjective( const char *obj ) {
 	objectiveUp = true;
 }
 
-
 /*
 ===============
 idPlayer::HideObjective
@@ -12960,7 +13019,7 @@ void idPlayer::DoMelee(void) {
 
 	// What projectile \ hitscan are we going to use based on class?
 	if (warlockMode){
-		// Warlocks shoot a beam boi.
+		// Warlocks thrust a "lance"
 		def = gameLocal.FindEntityDef("hitscan_railgun", false);
 		isHitscan	= true;
 		num_attacks = 1;
@@ -12969,7 +13028,7 @@ void idPlayer::DoMelee(void) {
 		fuseOffset	= 0;
 	}
 	else if (titanMode){
-		// Titans throw a fire hammer boi... Trust me, it's in the game. 
+		// Titans throw a "fire hammer"
 		def = gameLocal.FindEntityDef("projectile_napalm2", false);
 		isHitscan	= false;
 		num_attacks = 1;
@@ -12978,7 +13037,7 @@ void idPlayer::DoMelee(void) {
 		fuseOffset	= 0;
 	}
 	else if (hunterMode){
-		// Alright it's not a knife but they gotta throw something, because throwing stuff is fun.
+		// Hunters throw a "knife"
 		def = gameLocal.FindEntityDef("projectile_nail2", false);
 		isHitscan	= false;
 		num_attacks	= 1;
@@ -13016,14 +13075,14 @@ void idPlayer::DoGrenade(void) {
 	int						num_attacks;
 	int						spread;
 	int						power;
-	float						fuseOffset;
+	float					fuseOffset;
 
 	muzzleOrigin = weapon->playerViewOrigin;
 	muzzleAxis = weapon->playerViewAxis;
 
 	// What projectile \ hitscan are we going to use based on class?
 	if (warlockMode){
-		// Warlocks cast insta explosion!
+		// Warlocks make an instant explosion. Hitscan grenade.
 		def = gameLocal.FindEntityDef("projectile_grenade", false);
 		isHitscan = true;
 		num_attacks = 1;
@@ -13032,7 +13091,7 @@ void idPlayer::DoGrenade(void) {
 		fuseOffset = 2.5;
 	}
 	else if (titanMode){
-		// Titans throw a fucking grenade. Beacuse I'm lazy. Again.
+		// Titans throw one STRONK grenade.
 		def = gameLocal.FindEntityDef("projectile_grenade", false);
 		isHitscan = false;
 		num_attacks = 1;
@@ -13041,7 +13100,7 @@ void idPlayer::DoGrenade(void) {
 		fuseOffset = 0;
 	}
 	else if (hunterMode){
-		// Hunters toss a bunch of explosives that detonate in close range
+		// Hunters toss a buncha fuckin' mini nades.
 		def = gameLocal.FindEntityDef("projectile_grenade2", false);
 		isHitscan = false;
 		num_attacks = 5;
@@ -13072,11 +13131,6 @@ idPlayer::DoSuper
 ================
 */
 void idPlayer::DoSuper(void) {
-
-	// Warlock lightning gun?
-	// Titan hammer spam?
-	// Hunter knife blast.
-
 	idEntity*				ent;
 	const idDeclEntityDef*	def;
 	idDict					attackDict;
@@ -13093,7 +13147,7 @@ void idPlayer::DoSuper(void) {
 
 	// What projectile \ hitscan are we going to use based on class?
 	if (warlockMode){
-		// Warlocks throw A big ol' gravity bomb!
+		// Warlocks throw a "nova bomb".
 		def = gameLocal.FindEntityDef("projectile_dmg2", false);
 		isHitscan = false;
 		num_attacks = 1;
@@ -13102,8 +13156,8 @@ void idPlayer::DoSuper(void) {
 		fuseOffset = 0;
 	}
 	else if (titanMode){
-		// Titans throw more "hammers"?
-		def = gameLocal.FindEntityDef("projectile_grenade2", false);
+		// Titans asplode.
+		def = gameLocal.FindEntityDef("projectile_grenade3", false);
 		isHitscan = false;
 		num_attacks = 10;
 		spread = 1;
@@ -13111,7 +13165,7 @@ void idPlayer::DoSuper(void) {
 		fuseOffset = 3;
 	}
 	else if (hunterMode){
-		// Hunters throw a buncha fuckin' seeking knives.
+		// Hunters throw a buncha fuckin' knives.
 		def = gameLocal.FindEntityDef("projectile_nail_seek2", false);
 		isHitscan = false;
 		num_attacks = 24;
