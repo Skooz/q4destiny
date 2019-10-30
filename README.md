@@ -1,10 +1,12 @@
 # Q4 Destiny
 Q4 Destiny is a basic mod adding classes, abilities, and randomized weapons.
 # Deliverables:
+
 ##Selectable Classes
 1. Warlock
 2. Titan
 3. Hunter
+
 ##Four unique abilities per class
 1. Warlock
 	* Melee: Lance - High damage railgun projectile.
@@ -21,10 +23,12 @@ Q4 Destiny is a basic mod adding classes, abilities, and randomized weapons.
 	* Grenade: Bundle of Grenades - Throw 5x grenades that instantly explode several feet away.
 	* Super: Lotsa Knives - Lotsa high damage nail projectiles.
 	* Passive: Move twice as fast!
+	
 ##Randomized weapons
 * All weapons (where applicable) have randomized:
 	* Rate of Fire
 	* Clip Size
+	
 ##Five droppables from enemies on death
 1. Recharge Melee instantly. (20% chance to drop)
 2. Recharge Grenade instantly. (20% chance to drop)
